@@ -3,22 +3,37 @@ import WordGrid from './WordGrid';
 import useGameLogic from './useGameLogic';
 import Confetti from 'react-confetti';
 
-const groups = [
-  ['Beautiful', 'Strong', 'Smart', 'Caring'],
-  ['Sadhana Mehta', 'Abhas Mehta', 'Prasad Fadke', 'Bhaskar Mehta'],
-  ['Rutgers', 'MSU', 'Merck', 'AbbView & CVS'],
-  ['Exchange Place', 'Naala', '516 Orange St - 3', 'Tower 1/304 Monalisa'],
+const groupsData = [
+  {
+    theme: "Things Abha is",
+    words: ['Beautiful', 'Strong', 'Smart', 'Caring'],
+    color: '#FF6347'
+  },
+  {
+    theme: "People Abha loves",
+    words: ['Sadhana Mehta', 'Abhas Mehta', 'Prasad Fadke', 'Bhaskar Mehta'],
+    color: '#4682B4'
+  },
+  {
+    theme: "Where Abha worked and studied",
+    words: ['Rutgers', 'MSU', 'Merck', 'AbbView & CVS'],
+    color: '#32CD32'
+  },
+  {
+    theme: "Places Abha loves",
+    words: ['Exchange Place', 'Naala', '516 Orange St - 3', '38725 Lexington St'],
+    color: '#DA70D6'
+  }
 ];
 
-// Flatten and shuffle words ONCE
-const shuffledWords = groups.flat().sort(() => Math.random() - 0.5);
+const shuffledWords = groupsData.flatMap(group => group.words).sort(() => Math.random() - 0.5);
 
 const App: React.FC = () => {
-  const { selectedWords, correctGroups, onSelectWord, validateGroup } =
-    useGameLogic(groups);
+  const { selectedWords, correctGroups, onSelectWord, validateGroup } = useGameLogic(groupsData);
 
   const [gameOver, setGameOver] = useState(false);
-  const [shake, setShake] = useState(false); // Control shake animation
+  const [shake, setShake] = useState(false);
+  const [incorrectMessage, setIncorrectMessage] = useState(false);
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -42,32 +57,40 @@ const App: React.FC = () => {
     if (selectedWords.length === 4) {
       validateGroup();
     } else {
-      setShake(true); // Trigger shake animation
-      setTimeout(() => setShake(false), 500); // Stop shaking after 500ms
+      setShake(true);
+      setIncorrectMessage(true);
+      setTimeout(() => {
+        setShake(false);
+        setIncorrectMessage(false);
+      }, 1000);
     }
   };
 
   const getWordColor = (word: string) => {
-    for (let i = 0; i < correctGroups.length; i++) {
-      if (correctGroups[i].includes(word)) {
-        return ['#FF6347', '#4682B4', '#32CD32', '#DA70D6'][i]; // Unique colors per group
-      }
+    const correctGroup = correctGroups.find(group => group.words.includes(word));
+    if (correctGroup) {
+      return correctGroup.color;
     }
-    return selectedWords.includes(word) ? '#FFD700' : 'white'; // Gold for selected words
+    return selectedWords.includes(word) ? '#FFD700' : 'white';
   };
 
   return (
-    <div className={`app-container ${shake ? 'shake' : ''}`} style={{ padding: '20px', textAlign: 'center' }}>
+    <div
+      className={`app-container ${shake ? 'shake' : ''}`}
+      style={{ padding: '20px', textAlign: 'center' }}
+    >
       {gameOver && (
         <>
           <Confetti width={windowSize.width} height={windowSize.height} />
-          <h1 style={{ fontSize: '100px', marginTop: '250px' }}>Happy Birthday Abha!</h1>
+          <h1 style={{ fontSize: '100px', marginTop: '250px', color: '#FFD700' }}>
+            Happy Birthday Abha!
+          </h1>
         </>
       )}
 
       {!gameOver && (
         <>
-          <h1>Abha's Connections</h1>
+          <h1 style={{ color: '#FFD700' }}>Abha's Connections</h1>
           <WordGrid
             words={shuffledWords}
             onSelectWord={onSelectWord}
@@ -83,6 +106,27 @@ const App: React.FC = () => {
           >
             Submit
           </button>
+          {incorrectMessage && (
+            <h2
+              style={{
+                color: 'red',
+                position: 'fixed',
+                bottom: '20px',
+                width: '100%',
+                textAlign: 'center',
+                animation: 'fadeOut 1s forwards',
+              }}
+            >
+              INCORRECT!
+            </h2>
+          )}
+            <div style={{ marginTop: '30px' }}>
+              {correctGroups.map((group, index) => (
+                <h3 key={index} style={{ color: group.color }}>
+                  {group.theme}
+                </h3>
+              ))}
+            </div>
         </>
       )}
     </div>

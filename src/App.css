@@ -1,21 +1,22 @@
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  75% { transform: translateX(10px); }
+.word-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Change to 2 columns for a rectangular layout */
+  gap: 40px;
+  max-width: 1000px; /* Adjust width as needed */
+  margin: 0 auto;
 }
 
-@keyframes fadeOut {
-  0% { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-.app-container.shake {
-  animation: shake 0.5s;
-}
-
-.incorrect-message {
-  margin-top: 20px;
-  font-size: 24px;
-  color: red;
-  animation: fadeOut 1.5s forwards;
+.word-tile {
+  border: 2px solid black;
+  padding: 30px; /* Increase padding for more height */
+  text-align: center;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  min-height: 30px; /* Increase min-height for a more rectangular shape */
+  line-height: 1.25;
 }

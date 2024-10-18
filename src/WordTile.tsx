@@ -26,6 +26,7 @@ const WordTile: React.FC<WordTileProps> = ({ word, isSelected, onClick }) => {
         textAlign: 'center',
         transform: randomAlignment(), // Apply random alignment
         transition: 'transform 0.3s', // Smooth transition for transform changes
+        minHeight: '10px'
       }}
     >
       {word}
