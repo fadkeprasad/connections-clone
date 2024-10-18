@@ -4,10 +4,10 @@ import useGameLogic from './useGameLogic';
 import Confetti from 'react-confetti';
 
 const groups = [
-  ['apple', 'banana', 'cherry', 'grape'],
-  ['car', 'train', 'plane', 'boat'],
-  ['red', 'blue', 'green', 'yellow'],
-  ['dog', 'cat', 'mouse', 'rabbit'],
+  ['Beautiful', 'Strong', 'Smart', 'Caring'],
+  ['Sadhana Mehta', 'Abhas Mehta', 'Prasad Fadke', 'Bhaskar Mehta'],
+  ['Rutgers', 'MSU', 'Merck', 'AbbView & CVS'],
+  ['Exchange Place', 'Naala', '516 Orange St - 3', 'Tower 1/304 Monalisa'],
 ];
 
 // Flatten and shuffle words ONCE
@@ -18,6 +18,7 @@ const App: React.FC = () => {
     useGameLogic(groups);
 
   const [gameOver, setGameOver] = useState(false);
+  const [shake, setShake] = useState(false); // Control shake animation
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -41,33 +42,36 @@ const App: React.FC = () => {
     if (selectedWords.length === 4) {
       validateGroup();
     } else {
-      alert('Select 4 words!');
+      setShake(true); // Trigger shake animation
+      setTimeout(() => setShake(false), 500); // Stop shaking after 500ms
     }
   };
 
-  // Function to determine if a word belongs to a validated group
-  const isWordInValidatedGroup = (word: string) =>
-    correctGroups.some(group => group.includes(word));
+  const getWordColor = (word: string) => {
+    for (let i = 0; i < correctGroups.length; i++) {
+      if (correctGroups[i].includes(word)) {
+        return ['#FF6347', '#4682B4', '#32CD32', '#DA70D6'][i]; // Unique colors per group
+      }
+    }
+    return selectedWords.includes(word) ? '#FFD700' : 'white'; // Gold for selected words
+  };
 
   return (
-    <div style={{ padding: '20px', textAlign: 'center' }}>
+    <div className={`app-container ${shake ? 'shake' : ''}`} style={{ padding: '20px', textAlign: 'center' }}>
       {gameOver && (
         <>
           <Confetti width={windowSize.width} height={windowSize.height} />
-          <h1 style={{ fontSize: '100px', marginTop: '100px' }}>
-            Happy Birthday Abha!
-          </h1>
+          <h1 style={{ fontSize: '100px', marginTop: '250px' }}>Happy Birthday Abha!</h1>
         </>
       )}
 
       {!gameOver && (
         <>
-          <h1>NYT Connections Clone</h1>
+          <h1>Abha's Connections</h1>
           <WordGrid
             words={shuffledWords}
-            selectedWords={selectedWords}
             onSelectWord={onSelectWord}
-            isWordInValidatedGroup={isWordInValidatedGroup}
+            getWordColor={getWordColor}
           />
           <button
             onClick={handleValidate}
@@ -79,12 +83,6 @@ const App: React.FC = () => {
           >
             Submit
           </button>
-          <div style={{ marginTop: '20px' }}>
-            <h2>Correct Groups: {correctGroups.length}</h2>
-            {correctGroups.map((group: string[], index: number) => (
-              <p key={index}>{group.join(', ')}</p>
-            ))}
-          </div>
         </>
       )}
     </div>

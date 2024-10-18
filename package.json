@@ -15,13 +15,16 @@
     "react-scripts": "5.0.1",
     "react-use": "^17.5.1",
     "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "homepage": "https://fadkeprasad.github.io/connections-clone"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -42,6 +45,7 @@
     ]
   },
   "devDependencies": {
-    "@types/react": "^18.3.11"
+    "@types/react": "^18.3.11",
+    "gh-pages": "^6.2.0"
   }
 }
