@@ -1,26 +1,46 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import WordGrid from './WordGrid';
+import useGameLogic from './useGameLogic';
 
-function App() {
+const groups = [
+  ['apple', 'banana', 'cherry', 'grape'],
+  ['car', 'train', 'plane', 'boat'],
+  ['red', 'blue', 'green', 'yellow'],
+  ['dog', 'cat', 'mouse', 'rabbit'],
+];
+
+const App: React.FC = () => {
+  const words = groups.flat();
+  const { selectedWords, correctGroups, onSelectWord, validateGroup } =
+    useGameLogic(groups);
+
+  const handleValidate = () => {
+    if (selectedWords.length === 4) {
+      validateGroup();
+    } else {
+      alert('Select 4 words!');
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ padding: '20px' }}>
+      <h1>NYT Connections Clone</h1>
+      <WordGrid
+        words={words}
+        selectedWords={selectedWords}
+        onSelectWord={onSelectWord}
+      />
+      <button onClick={handleValidate} style={{ marginTop: '20px' }}>
+        Validate Group
+      </button>
+      <div style={{ marginTop: '20px' }}>
+        <h2>Correct Groups: {correctGroups.length}</h2>
+        {correctGroups.map((group, index) => (
+          <p key={index}>{group.join(', ')}</p>
+        ))}
+      </div>
     </div>
   );
-}
+};
 
 export default App;
